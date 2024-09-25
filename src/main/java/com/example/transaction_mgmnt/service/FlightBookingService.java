@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.UUID;
+import java.util.Random;
 
 @Service
 public class FlightBookingService {
@@ -36,12 +36,20 @@ public class FlightBookingService {
         paymentInfo.setAmount(passengerInfo.getFare());
 
         paymentInfoRepository.save(paymentInfo);
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        Random random = new Random();
+        StringBuilder pnr = new StringBuilder();
 
+        // Loop to generate PNR of the specified length
+        for (int i = 0; i < 10; i++) {
+            int index = random.nextInt(characters.length());
+            pnr.append(characters.charAt(index));
+        }
         return FlightBookingAcknowledgement.builder()
                 .status("SUCCESS")
                 .totalFare(passengerInfo.getFare())
                 .passengerInfo(passengerInfo)
-                .pnrNo(UUID.randomUUID().toString().split("-")[0])
+                .pnrNo(pnr.toString())
                 .build();
     }
 }
